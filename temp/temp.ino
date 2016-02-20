@@ -13,7 +13,11 @@ void setup(){
 
 void loop() {
     //lights up segment 2 
-    pinMode(2,ON);
+    //pinMode(2,ON);
+    // ex to display Number 1 light up segment 3 and 4
+    pinMode(3,ON); 
+    pinMode(4,ON); 
+
     //reads temperature and prints to the serial monitor
     tempC = analogRead(tempPin);
     tempC = (5.0 * tempC * 100.0)/1024.0;
