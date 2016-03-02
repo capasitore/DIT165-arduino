@@ -1,12 +1,18 @@
-
-
-
+// 14221 
 int tempPin = 0;
-int lastPoll;
 int tempC;
 int left;
 int right;
+int timeLeft = 0;
+int updateDelay = 1000;
 
+int binaryOne;
+int binaryTwo;
+int binaryFour;
+int binaryEight;
+
+int maxTemp;
+int firstRead = 1;
 
 void setup() {
   pinMode(1, OUTPUT);
@@ -19,21 +25,52 @@ void setup() {
   pinMode(9, OUTPUT);
   pinMode(10, OUTPUT);
 
+  pinMode(11, INPUT);
+  pinMode(12, INPUT);
+  pinMode(13, INPUT);
+  pinMode(2, INPUT);
+
+
+
   Serial.begin (9600);
-  int lastPoll = millis();
-
-
-
 }
 
 void loop() {
-  if((millis() - lastPoll) > 2000){
+  
+  binaryOne = digitalRead(11);
+  binaryTwo = digitalRead(12);
+  binaryFour = digitalRead(13);
+  binaryEight = digitalRead(2);
+  Serial.println();
+  Serial.print(binaryOne);
+  Serial.print(binaryTwo);
+  Serial.print(binaryFour);
+  Serial.print(binaryEight);
+  Serial.println();
+  
+  if(timeLeft < 1){
+    timeLeft = updateDelay;
     tempC = getTemp();
+    if(tempC > maxTemp){
+      maxTemp = tempC;
+    }
     right = tempC % 10;
     left = tempC / 10;
-    lastPoll = millis(); 
   }
-  show(left, right);
+  else{
+    timeLeft += -25;
+  }
+
+  if(binaryOne && binaryTwo && binaryFour && binaryEight){
+
+    show(left, right);
+  }else{
+    int maxLeft = maxTemp / 10;
+    int maxRight = maxTemp % 10;
+    show(maxLeft, maxRight);
+  }
+
+
 
 }
 
@@ -204,9 +241,11 @@ void getNumber(int num) {
 int getTemp(){
   int tempC = analogRead(tempPin);
   tempC = (5.0 * tempC * 100.0)/1024.0;
-  Serial.print((byte)tempC);
-  Serial.println(" C");
+  if(firstRead){
+    maxTemp = tempC;
+    firstRead = 0;
+  }
+  //Serial.print((byte)tempC);
+  //Serial.println(" C");
   return tempC;
 }
-  
-
